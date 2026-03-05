@@ -1,0 +1,14 @@
+---
+layout: default
+---
+<h1>{{ page.title }}</h1>
+<p><strong>Location:</strong> {{ page.location }}</p>
+
+{{ content }}
+
+<hr>
+<a href="https://github.com[BROKEN]+{{ page.title | url_encode }}">
+  <button style="background-color: #d73a49; color: white; padding: 10px; border-radius: 5px; border: none; cursor: pointer;">
+    Report Issue with {{ page.title }}
+  </button>
+</a>
