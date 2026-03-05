@@ -22,43 +22,40 @@ Welcome! Below is a live list of all available laboratory demonstrations.
 <h2>⚠️ Current Reported Issues</h2>
 <div id="issue-container"><p>Loading...</p></div>
 
-<script>
+<script id="github-issue-loader">
 (function() {
-  async function loadIssues() {
-    const container = document.getElementById('issue-container');
-    if (!container) return;
+  const container = document.getElementById('issue-container');
+  if (!container) return;
 
-    // We are using a completely unique variable name to prevent conflicts
-    const finalApiUrl = "https://api.github.com";
+  // We are NOT using variables here. This is one solid, unchangeable string.
+  const myUrl = "https://api.github.com";
 
-    try {
-      console.log("Attempting to fetch from:", finalApiUrl);
-      const response = await fetch(finalApiUrl);
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        container.innerHTML = `<p style="color:red;">❌ GitHub Error: ${response.status} (${errorData.message})</p>`;
-        return;
-      }
-      
-      const issues = await response.json();
+  console.log("FINAL TEST - Fetching from:", myUrl);
 
+  fetch(myUrl)
+    .then(response => {
+      if (!response.ok) throw new Error("GitHub API Error: " + response.status);
+      return response.json();
+    })
+    .then(issues => {
       if (!Array.isArray(issues)) {
-        container.innerHTML = `<p style="color:red;">❌ Error: Received unexpected data from GitHub.</p>`;
+        container.innerHTML = "❌ Unexpected data format from GitHub.";
         return;
       }
 
+      // Filter out Pull Requests
       const actualIssues = issues.filter(i => !i.pull_request);
 
       if (actualIssues.length === 0) {
-        container.innerHTML = '<p>✅ No open issues reported.</p>';
+        container.innerHTML = "✅ No open issues reported.";
         return;
       }
 
-      let listHtml = '<ul>';
+      let listHtml = "<ul>";
       actualIssues.forEach(issue => {
         listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
         
+        // Highlight matching cards
         document.querySelectorAll('.demo-card').forEach(card => {
           const cardId = card.getAttribute('data-demo-id');
           if (cardId && issue.title.includes(`(${cardId})`)) {
@@ -69,19 +66,11 @@ Welcome! Below is a live list of all available laboratory demonstrations.
           }
         });
       });
-      container.innerHTML = listHtml + '</ul>';
-    } catch (e) {
-      container.innerHTML = '<p style="color:red;">❌ Connection error. See console for details.</p>';
-      console.error("Fetch failed:", e);
-    }
-  }
-
-  // Run the function immediately
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadIssues);
-  } else {
-    loadIssues();
-  }
+      container.innerHTML = listHtml + "</ul>";
+    })
+    .catch(err => {
+      console.error("Fetch failed:", err);
+      container.innerHTML = `<p style="color:red;">❌ ${err.message}. Ensure the repo is Public and Issues are enabled.</p>`;
+    });
 })();
 </script>
-
