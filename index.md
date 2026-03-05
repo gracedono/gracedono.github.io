@@ -26,20 +26,21 @@ Welcome! Below is a live list of all available laboratory demonstrations.
 {% raw %}
 <script>
   async function loadIssues() {
-    // 1. Define the container FIRST so it's always available for errors
     const container = document.getElementById('issue-container');
+    if (!container) return;
+
+    // STEP 1: Use the automatic Jekyll variable for the path
+    const repoPath = "{{ site.github.repository_nwo }}"; 
     
-    // 2. Ensure the REPO path is correct (username/repo-name)
-    const repo = "gracedono/YOUR-REPO-NAME"; 
-    const api = `https://api.github.com{repo}/issues?state=open&labels=lab-demo`;
+    // STEP 2: Construct the API URL explicitly
+    const apiUrl = `https://api.github.com{repoPath}/issues?state=open&labels=lab-demo`;
 
     try {
-      if (!container) return; // Exit if the HTML element is missing
-
-      const response = await fetch(api);
+      console.log("Fetching from:", apiUrl); // Check this in your Console!
+      const response = await fetch(apiUrl);
       
       if (!response.ok) {
-        container.innerHTML = `<p style="color:red;">❌ Error: ${response.status}. Check repo name in script.</p>`;
+        container.innerHTML = `<p style="color:red;">❌ GitHub API Error: ${response.status}</p>`;
         return;
       }
 
@@ -47,15 +48,14 @@ Welcome! Below is a live list of all available laboratory demonstrations.
       const actualIssues = issues.filter(i => !i.pull_request);
 
       if (actualIssues.length === 0) {
-        container.innerHTML = '<p>✅ No open issues at this time.</p>';
+        container.innerHTML = '<p>✅ No open issues reported.</p>';
         return;
       }
 
       let listHtml = '<ul>';
       actualIssues.forEach(issue => {
         listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
-
-        // Highlight matching cards in the inventory
+        
         document.querySelectorAll('.demo-card').forEach(card => {
           const cardId = card.getAttribute('data-demo-id');
           if (cardId && issue.title.includes(`(${cardId})`)) {
@@ -66,17 +66,13 @@ Welcome! Below is a live list of all available laboratory demonstrations.
           }
         });
       });
-      
       container.innerHTML = listHtml + '</ul>';
 
     } catch (e) {
-      if (container) {
-        container.innerHTML = '<p style="color:red;">❌ Connection error. Check your internet.</p>';
-      }
-      console.error("Tracker Error:", e);
+      container.innerHTML = '<p style="color:red;">❌ Connection error. Try a hard refresh (Ctrl+F5).</p>';
+      console.error("Detailed Error:", e);
     }
   }
-
   document.addEventListener('DOMContentLoaded', loadIssues);
 </script>
 {% endraw %}
