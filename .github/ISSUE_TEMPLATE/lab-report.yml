@@ -1,1 +1,24 @@
+name: Lab Demo Issue Report
+description: Report a broken or missing item from a lab demo.
+title: "[BROKEN]: "
+labels: ["bug", "lab-demo"]
+body:
+  - type: dropdown
+    id: demo-name
+    attributes:
+      label: Which lab demo is having an issue?
+      options:
+        - Van de Graaff Generator
+        - Laser Optics Kit
+        - Newton's Cradle
+        - Circuit Workbench
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What is the problem?
+      placeholder: e.g., The belt is snapped, or a cable is missing.
+    validations:
+      required: true
 
