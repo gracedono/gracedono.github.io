@@ -27,20 +27,20 @@ Welcome! Below is a live list of all available laboratory demonstrations.
   const repoPath = "{{ site.github.repository_nwo }}"; 
 </script>
 
-{% raw %}
 <script>
 async function loadIssues() {
   const container = document.getElementById('issue-container');
   if (!container) return;
 
-  // 2. Added a "/" before ${repoPath} to fix the URL construction
-  const apiUrl = `https://api.github.com{repoPath}/issues?state=open&labels=lab-demo`;
+  // MANUALLY SET URL FOR YOUR SPECIFIC REPO
+  const apiUrl = `https://api.github.com`;
 
   try {
     console.log("Fetching from:", apiUrl);
     const response = await fetch(apiUrl);
     
     if (!response.ok) {
+      // If this returns 404, double-check that 'Issues' are enabled in your repo settings
       container.innerHTML = `<p style="color:red;">❌ GitHub API Error: ${response.status}</p>`;
       return;
     }
@@ -57,6 +57,7 @@ async function loadIssues() {
     actualIssues.forEach(issue => {
       listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
       
+      // Matches the "ID: Ea-1" style from your cards
       document.querySelectorAll('.demo-card').forEach(card => {
         const cardId = card.getAttribute('data-demo-id');
         if (cardId && issue.title.includes(`(${cardId})`)) {
@@ -75,4 +76,4 @@ async function loadIssues() {
 }
 document.addEventListener('DOMContentLoaded', loadIssues);
 </script>
-{% endraw %}
+
