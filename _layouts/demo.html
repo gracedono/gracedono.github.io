@@ -4,12 +4,11 @@ layout: default
 <h1>{{ page.title }}</h1>
 <p><strong>Demo ID:</strong> {{ page.demo_id }}</p>
 
-<div class="content">
+<div class="demo-content">
   {{ content }}
 </div>
 
 <hr style="margin-top: 50px;">
 
-<!-- IMPORTANT: No spaces are allowed between href=" and the closing " -->
-<a href="https://github.com+{{ page.title | url_encode }}+({{ page.demo_id | url_encode }})" style="display:inline-block;background-color:#d73a49;color:white;padding:15px 25px;border-radius:8px;text-decoration:none;font-weight:bold;font-family:sans-serif;">🚨 Report a Problem with {{ page.demo_id }}</a>
-
+<!-- This link is written on one single line to prevent the browser from adding "+" or spaces -->
+<a href="https://github.com+{{ page.title | url_encode }}+({{ page.demo_id | url_encode }})&labels=lab-demo" style="display:inline-block;background-color:#d73a49;color:white;padding:15px 25px;border-radius:8px;text-decoration:none;font-weight:bold;font-family:sans-serif;">🚨 Report a Problem with {{ page.demo_id }}</a>
