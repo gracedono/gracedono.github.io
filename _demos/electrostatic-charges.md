@@ -1,7 +1,7 @@
 ---
 layout: demo
 title: Electrostatic Charges
-demoID: Ea-1
+demo_id: Ea-1
 ---
 ### Description
 Triboelectric effects are used to define the signs of charges. A glass rod rubbed with silk has a positive charge and an ebonite rod rubbed with cat fur is negatively charged.
