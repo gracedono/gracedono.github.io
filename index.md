@@ -26,42 +26,57 @@ Welcome! Below is a live list of all available laboratory demonstrations.
 {% raw %}
 <script>
   async function loadIssues() {
-    // This part stays exactly as is
-    const repo = "gracedono/YOUR-REPO-NAME"; // Replace with your actual repo name
+    // 1. Define the container FIRST so it's always available for errors
+    const container = document.getElementById('issue-container');
+    
+    // 2. Ensure the REPO path is correct (username/repo-name)
+    const repo = "gracedono/YOUR-REPO-NAME"; 
     const api = `https://api.github.com{repo}/issues?state=open&labels=lab-demo`;
 
     try {
-      const response = await fetch(api);
-      const issues = await response.json();
-      const container = document.getElementById('issue-container');
+      if (!container) return; // Exit if the HTML element is missing
 
-      if (!issues || issues.length === 0) {
-        container.innerHTML = '<p>No open issues at this time.</p>';
+      const response = await fetch(api);
+      
+      if (!response.ok) {
+        container.innerHTML = `<p style="color:red;">❌ Error: ${response.status}. Check repo name in script.</p>`;
+        return;
+      }
+
+      const issues = await response.json();
+      const actualIssues = issues.filter(i => !i.pull_request);
+
+      if (actualIssues.length === 0) {
+        container.innerHTML = '<p>✅ No open issues at this time.</p>';
         return;
       }
 
       let listHtml = '<ul>';
-      issues.forEach(issue => {
-        if (!issue.pull_request) {
-          listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
+      actualIssues.forEach(issue => {
+        listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
 
-          // Match with cards in inventory
-          document.querySelectorAll('.demo-card').forEach(card => {
-            const cardId = card.getAttribute('data-demo-id');
-            if (issue.title.includes(`(${cardId})`)) {
-              card.style.borderColor = '#d73a49';
-              card.style.backgroundColor = '#fff5f5';
-              card.querySelector('.issue-badge').style.display = 'block';
-            }
-          });
-        }
+        // Highlight matching cards in the inventory
+        document.querySelectorAll('.demo-card').forEach(card => {
+          const cardId = card.getAttribute('data-demo-id');
+          if (cardId && issue.title.includes(`(${cardId})`)) {
+            card.style.borderColor = '#d73a49';
+            card.style.backgroundColor = '#fff5f5';
+            const badge = card.querySelector('.issue-badge');
+            if (badge) badge.style.display = 'block';
+          }
+        });
       });
+      
       container.innerHTML = listHtml + '</ul>';
+
     } catch (e) {
-      container.innerHTML = '<p>Error loading tracker.</p>';
+      if (container) {
+        container.innerHTML = '<p style="color:red;">❌ Connection error. Check your internet.</p>';
+      }
+      console.error("Tracker Error:", e);
     }
   }
+
   document.addEventListener('DOMContentLoaded', loadIssues);
 </script>
 {% endraw %}
-
