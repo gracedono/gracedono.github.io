@@ -7,8 +7,10 @@ layout: default
 {{ content }}
 
 <hr>
-<a href="https://github.com[BROKEN]+{{ page.title | url_encode }}">
-  <button style="background-color: #d73a49; color: white; padding: 10px; border-radius: 5px; border: none; cursor: pointer;">
-    Report Issue with {{ page.title }}
+
+<!-- This link creates a new issue in your repo with the title pre-filled -->
+<a href="https://github.com[BROKEN]+{{ page.title | url_encode }}+({{ page.demo_id | url_encode }})&body=Please+describe+the+issue+with+this+demo:">
+  <button style="background-color: #d73a49; color: white; padding: 12px 20px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer;">
+    ⚠️ Report Issue with {{ page.demo_id }}
   </button>
 </a>
