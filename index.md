@@ -22,30 +22,35 @@ Welcome! Below is a live list of all available laboratory demonstrations.
 <h2>⚠️ Current Reported Issues</h2>
 <div id="issue-container"><p>Loading...</p></div>
 
-<!-- 1. Move this line OUTSIDE the raw block so Jekyll can fill it in -->
-<script>
-  const repoPath = "{{ site.github.repository_nwo }}"; 
-</script>
-
 <script>
 async function loadIssues() {
   const container = document.getElementById('issue-container');
   if (!container) return;
 
-  // MANUALLY SET URL FOR YOUR SPECIFIC REPO
-  const apiUrl = `https://api.github.com`;
+  // This is the direct, manual URL to your specific repository's issues
+  const apiUrl = "https://api.github.com";
 
   try {
     console.log("Fetching from:", apiUrl);
     const response = await fetch(apiUrl);
     
+    // If the response is not "OK" (200), GitHub sent an error object instead of an array
     if (!response.ok) {
-      // If this returns 404, double-check that 'Issues' are enabled in your repo settings
-      container.innerHTML = `<p style="color:red;">❌ GitHub API Error: ${response.status}</p>`;
+      const errorData = await response.json();
+      console.error("GitHub API Error Details:", errorData);
+      container.innerHTML = `<p style="color:red;">❌ GitHub API Error: ${response.status} - ${errorData.message}</p>`;
       return;
     }
     
     const issues = await response.json();
+
+    // Safety check: ensure 'issues' is actually an array before filtering
+    if (!Array.isArray(issues)) {
+      console.error("Expected an array but got:", issues);
+      container.innerHTML = `<p style="color:red;">❌ Error: GitHub returned unexpected data format.</p>`;
+      return;
+    }
+
     const actualIssues = issues.filter(i => !i.pull_request);
 
     if (actualIssues.length === 0) {
@@ -57,7 +62,6 @@ async function loadIssues() {
     actualIssues.forEach(issue => {
       listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
       
-      // Matches the "ID: Ea-1" style from your cards
       document.querySelectorAll('.demo-card').forEach(card => {
         const cardId = card.getAttribute('data-demo-id');
         if (cardId && issue.title.includes(`(${cardId})`)) {
@@ -70,10 +74,9 @@ async function loadIssues() {
     });
     container.innerHTML = listHtml + '</ul>';
   } catch (e) {
-    container.innerHTML = '<p style="color:red;">❌ Connection error. Check the console for details.</p>';
+    container.innerHTML = '<p style="color:red;">❌ Connection error. Check your internet or browser console.</p>';
     console.error("Detailed Error:", e);
   }
 }
 document.addEventListener('DOMContentLoaded', loadIssues);
 </script>
-
