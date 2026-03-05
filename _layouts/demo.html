@@ -6,23 +6,11 @@ layout: default
 
 {{ content }}
 
-<hr>
+<hr style="margin-top: 50px;">
 
-<!-- A simple button that triggers a function -->
-<button onclick="reportIssue()" style="background-color: #d73a49; color: white; padding: 15px 25px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1em;">
+<!-- This is a single, clean button that triggers a direct URL move -->
+<button onclick="window.location.href='https://github.com+{{ page.title | url_encode }}+({{ page.demo_id | url_encode }})&labels=lab-demo'" 
+        style="background-color: #d73a49; color: white; padding: 15px 25px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-family: sans-serif;">
     🚨 Report a Problem with {{ page.demo_id }}
 </button>
 
-<script>
-  function reportIssue() {
-    // These variables pull directly from your Jekyll page data
-    const title = "[BROKEN] {{ page.title }} ({{ page.demo_id }})";
-    const repo = "gracedono/gracedono.github.io";
-    
-    // This builds the URL perfectly without any broken slashes or plus signs
-    const url = `https://github.com{repo}/issues/new?title=${encodeURIComponent(title)}&labels=lab-demo`;
-    
-    // Redirect the user
-    window.location.href = url;
-  }
-</script>
