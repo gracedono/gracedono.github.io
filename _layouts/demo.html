@@ -4,14 +4,16 @@ layout: default
 <h1>{{ page.title }}</h1>
 <p><strong>Demo ID:</strong> {{ page.demo_id }}</p>
 
-<div class="demo-content">
+<div class="demo-description">
   {{ content }}
 </div>
 
-<hr style="margin-top: 50px;">
+<hr style="margin-top: 40px;">
 
-<!-- This is the corrected, single-line link -->
-<a href="https://github.com{{ page.demo_id | url_encode }}&title=%5BBROKEN%5D+{{ page.title | url_encode }}+({{ page.demo_id | url_encode }})" 
-   style="display: inline-block; background-color: #d73a49; color: white; padding: 15px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; font-family: sans-serif;">
+<!-- Simplest possible link to avoid browser blocking -->
+<p>
+  <a href="https://github.com[BROKEN]+{{ page.title | url_encode }}+({{ page.demo_id | url_encode }})" 
+     style="background-color: #d73a49; color: white; padding: 15px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
     🚨 Report a Problem with {{ page.demo_id }}
-</a>
+  </a>
+</p>
