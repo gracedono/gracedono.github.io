@@ -23,60 +23,65 @@ Welcome! Below is a live list of all available laboratory demonstrations.
 <div id="issue-container"><p>Loading...</p></div>
 
 <script>
-async function loadIssues() {
-  const container = document.getElementById('issue-container');
-  if (!container) return;
+(function() {
+  async function loadIssues() {
+    const container = document.getElementById('issue-container');
+    if (!container) return;
 
-  // This is the direct, manual URL to your specific repository's issues
-  const apiUrl = "https://api.github.com";
+    // We are using a completely unique variable name to prevent conflicts
+    const finalApiUrl = "https://api.github.com";
 
-  try {
-    console.log("Fetching from:", apiUrl);
-    const response = await fetch(apiUrl);
-    
-    // If the response is not "OK" (200), GitHub sent an error object instead of an array
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("GitHub API Error Details:", errorData);
-      container.innerHTML = `<p style="color:red;">❌ GitHub API Error: ${response.status} - ${errorData.message}</p>`;
-      return;
-    }
-    
-    const issues = await response.json();
-
-    // Safety check: ensure 'issues' is actually an array before filtering
-    if (!Array.isArray(issues)) {
-      console.error("Expected an array but got:", issues);
-      container.innerHTML = `<p style="color:red;">❌ Error: GitHub returned unexpected data format.</p>`;
-      return;
-    }
-
-    const actualIssues = issues.filter(i => !i.pull_request);
-
-    if (actualIssues.length === 0) {
-      container.innerHTML = '<p>✅ No open issues reported.</p>';
-      return;
-    }
-
-    let listHtml = '<ul>';
-    actualIssues.forEach(issue => {
-      listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
+    try {
+      console.log("Attempting to fetch from:", finalApiUrl);
+      const response = await fetch(finalApiUrl);
       
-      document.querySelectorAll('.demo-card').forEach(card => {
-        const cardId = card.getAttribute('data-demo-id');
-        if (cardId && issue.title.includes(`(${cardId})`)) {
-          card.style.borderColor = '#d73a49';
-          card.style.backgroundColor = '#fff5f5';
-          const badge = card.querySelector('.issue-badge');
-          if (badge) badge.style.display = 'block';
-        }
+      if (!response.ok) {
+        const errorData = await response.json();
+        container.innerHTML = `<p style="color:red;">❌ GitHub Error: ${response.status} (${errorData.message})</p>`;
+        return;
+      }
+      
+      const issues = await response.json();
+
+      if (!Array.isArray(issues)) {
+        container.innerHTML = `<p style="color:red;">❌ Error: Received unexpected data from GitHub.</p>`;
+        return;
+      }
+
+      const actualIssues = issues.filter(i => !i.pull_request);
+
+      if (actualIssues.length === 0) {
+        container.innerHTML = '<p>✅ No open issues reported.</p>';
+        return;
+      }
+
+      let listHtml = '<ul>';
+      actualIssues.forEach(issue => {
+        listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
+        
+        document.querySelectorAll('.demo-card').forEach(card => {
+          const cardId = card.getAttribute('data-demo-id');
+          if (cardId && issue.title.includes(`(${cardId})`)) {
+            card.style.borderColor = '#d73a49';
+            card.style.backgroundColor = '#fff5f5';
+            const badge = card.querySelector('.issue-badge');
+            if (badge) badge.style.display = 'block';
+          }
+        });
       });
-    });
-    container.innerHTML = listHtml + '</ul>';
-  } catch (e) {
-    container.innerHTML = '<p style="color:red;">❌ Connection error. Check your internet or browser console.</p>';
-    console.error("Detailed Error:", e);
+      container.innerHTML = listHtml + '</ul>';
+    } catch (e) {
+      container.innerHTML = '<p style="color:red;">❌ Connection error. See console for details.</p>';
+      console.error("Fetch failed:", e);
+    }
   }
-}
-document.addEventListener('DOMContentLoaded', loadIssues);
+
+  // Run the function immediately
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadIssues);
+  } else {
+    loadIssues();
+  }
+})();
 </script>
+
