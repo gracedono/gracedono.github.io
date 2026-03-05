@@ -1,0 +1,34 @@
+name: 🚨 Report a Demo Issue
+description: Use this form to report broken or missing lab equipment.
+title: "[BROKEN]: "
+labels: ["lab-demo"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Thank you for reporting this!
+        Your feedback helps us keep the lab running smoothly. Please fill out the details below.
+  - type: input
+    id: demo_id
+    attributes:
+      label: Demo ID
+      description: The ID of the lab equipment (e.g., Ea-1).
+    validations:
+      required: true
+  - type: textarea
+    id: what-is-wrong
+    attributes:
+      label: What is the problem?
+      placeholder: "Example: The glass rod is cracked, or the cat fur is missing."
+    validations:
+      required: true
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: How urgent is this repair?
+      options:
+        - "Low (Still usable)"
+        - "Medium (Needs repair soon)"
+        - "High (Cannot use for class)"
+    validations:
+      required: true
