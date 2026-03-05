@@ -1,6 +1,6 @@
 ---
 layout: demo
-title: Repulsion AND Attraction
+title: Repulsion and Attraction
 demo_id: Ea-6
 ---
 ### Description
