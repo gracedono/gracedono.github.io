@@ -22,55 +22,46 @@ Welcome! Below is a live list of all available laboratory demonstrations.
 <h2>⚠️ Current Reported Issues</h2>
 <div id="issue-container"><p>Loading...</p></div>
 
-<script id="github-issue-loader">
+<script>
 (function() {
   const container = document.getElementById('issue-container');
   if (!container) return;
 
-  // We are NOT using variables here. This is one solid, unchangeable string.
-  const myUrl = "https://api.github.com";
+  // We are building the URL in pieces so nothing can cut it off
+  const part1 = "https://api.github.com";
+  const part2 = "/repos/gracedono/gracedono.github.io";
+  const part3 = "/issues?state=open&labels=lab-demo";
+  const finalUrl = part1 + part2 + part3;
 
-  console.log("FINAL TEST - Fetching from:", myUrl);
+  console.log("SENDING REQUEST TO:", finalUrl);
 
-  fetch(myUrl)
-    .then(response => {
-      if (!response.ok) throw new Error("GitHub API Error: " + response.status);
-      return response.json();
+  fetch(finalUrl)
+    .then(res => {
+      if (!res.ok) throw new Error("Status: " + res.status);
+      return res.json();
     })
-    .then(issues => {
-      if (!Array.isArray(issues)) {
-        container.innerHTML = "❌ Unexpected data format from GitHub.";
+    .then(data => {
+      if (!Array.isArray(data)) {
+        container.innerHTML = "❌ GitHub returned an error object instead of a list.";
         return;
       }
-
-      // Filter out Pull Requests
-      const actualIssues = issues.filter(i => !i.pull_request);
-
-      if (actualIssues.length === 0) {
+      
+      const issues = data.filter(i => !i.pull_request);
+      if (issues.length === 0) {
         container.innerHTML = "✅ No open issues reported.";
         return;
       }
 
-      let listHtml = "<ul>";
-      actualIssues.forEach(issue => {
-        listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
-        
-        // Highlight matching cards
-        document.querySelectorAll('.demo-card').forEach(card => {
-          const cardId = card.getAttribute('data-demo-id');
-          if (cardId && issue.title.includes(`(${cardId})`)) {
-            card.style.borderColor = '#d73a49';
-            card.style.backgroundColor = '#fff5f5';
-            const badge = card.querySelector('.issue-badge');
-            if (badge) badge.style.display = 'block';
-          }
-        });
+      let html = "<ul>";
+      issues.forEach(is => {
+        html += `<li><a href="${is.html_url}" target="_blank">${is.title}</a></li>`;
       });
-      container.innerHTML = listHtml + "</ul>";
+      container.innerHTML = html + "</ul>";
     })
-    .catch(err => {
-      console.error("Fetch failed:", err);
-      container.innerHTML = `<p style="color:red;">❌ ${err.message}. Ensure the repo is Public and Issues are enabled.</p>`;
+    .catch(e => {
+      console.error("ERROR:", e);
+      container.innerHTML = "<p style='color:red;'>❌ Connection Error. Check console.</p>";
     });
 })();
 </script>
+
