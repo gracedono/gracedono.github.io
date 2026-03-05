@@ -22,9 +22,12 @@ Welcome! Below is a live list of all available laboratory demonstrations.
 <h2>⚠️ Current Reported Issues</h2>
 <div id="issue-container"><p>Loading...</p></div>
 
+<!-- PLACE THE SCRIPT HERE AT THE VERY BOTTOM -->
+{% raw %}
 <script>
   async function loadIssues() {
-    const repo = 'gracedono/{{ site.github.repository_name }}';
+    // This part stays exactly as is
+    const repo = "gracedono/YOUR-REPO-NAME"; // Replace with your actual repo name
     const api = `https://api.github.com{repo}/issues?state=open&labels=lab-demo`;
 
     try {
@@ -32,26 +35,33 @@ Welcome! Below is a live list of all available laboratory demonstrations.
       const issues = await response.json();
       const container = document.getElementById('issue-container');
 
-      if (issues.length === 0) {
-        container.innerHTML = '<p>No open issues.</p>';
+      if (!issues || issues.length === 0) {
+        container.innerHTML = '<p>No open issues at this time.</p>';
         return;
       }
 
       let listHtml = '<ul>';
       issues.forEach(issue => {
-        listHtml += `<li><a href="${issue.html_url}">${issue.title}</a></li>`;
+        if (!issue.pull_request) {
+          listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
 
-        // Look for the Demo ID in the issue title, e.g., "(EA-1)"
-        document.querySelectorAll('.demo-card').forEach(card => {
-          if (issue.title.includes(`(${card.dataset.demoId})`)) {
-            card.style.borderColor = '#d73a49';
-            card.querySelector('.issue-badge').style.display = 'block';
-          }
-        });
+          // Match with cards in inventory
+          document.querySelectorAll('.demo-card').forEach(card => {
+            const cardId = card.getAttribute('data-demo-id');
+            if (issue.title.includes(`(${cardId})`)) {
+              card.style.borderColor = '#d73a49';
+              card.style.backgroundColor = '#fff5f5';
+              card.querySelector('.issue-badge').style.display = 'block';
+            }
+          });
+        }
       });
       container.innerHTML = listHtml + '</ul>';
-    } catch (e) { console.error("API Error", e); }
+    } catch (e) {
+      container.innerHTML = '<p>Error loading tracker.</p>';
+    }
   }
   document.addEventListener('DOMContentLoaded', loadIssues);
 </script>
+{% endraw %}
 
