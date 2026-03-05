@@ -8,9 +8,11 @@ layout: default
 
 <hr style="margin-top: 50px;">
 
-<!-- This is a single, clean button that triggers a direct URL move -->
-<button onclick="window.location.href='https://github.com+{{ page.title | url_encode }}+({{ page.demo_id | url_encode }})&labels=lab-demo'" 
+<!-- This button uses site.github.repository_nwo to automatically get "username/repo" -->
+<button onclick="window.location.href='https://github.com/{{ site.github.repository_nwo }}/issues/new?title={{ page.title | url_encode }}%20({{ page.demo_id | url_encode }})&labels=lab-demo'" 
         style="background-color: #d73a49; color: white; padding: 15px 25px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-family: sans-serif;">
-    🚨 Report a Problem with {{ page.demo_id }}
+  🚨 Report a Problem with {{ page.demo_id }}
 </button>
+
+
 
