@@ -1,15 +1,12 @@
-# My Project Dashboard
-Welcome!
+## Lab Inventory
 
-## About This Site
-- **Built with:** GitHub Pages
-- **Theme:** Jekyll
-- **Feature:** Live Issue Tracking
+### 1. Van de Graaff Generator
+*Status: Functional*  
+[Report an Issue with this Demo](https://github.com:)
 
-## Current Project Goals
-1. Finalize the website layout.
-2. Integrate the live JavaScript tracker.
-3. Share the link with the team.
+### 2. Laser Optics Kit
+*Status: Functional*  
+[Report an Issue with this Demo](https://github.com:)
 
 ## Live Issue Tracker
 Below is the list of open issues pulled directly from the GitHub API:
