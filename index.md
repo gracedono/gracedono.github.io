@@ -22,57 +22,57 @@ Welcome! Below is a live list of all available laboratory demonstrations.
 <h2>⚠️ Current Reported Issues</h2>
 <div id="issue-container"><p>Loading...</p></div>
 
-<!-- PLACE THE SCRIPT HERE AT THE VERY BOTTOM -->
+<!-- 1. Move this line OUTSIDE the raw block so Jekyll can fill it in -->
+<script>
+  const repoPath = "{{ site.github.repository_nwo }}"; 
+</script>
+
 {% raw %}
 <script>
-  async function loadIssues() {
-    const container = document.getElementById('issue-container');
-    if (!container) return;
+async function loadIssues() {
+  const container = document.getElementById('issue-container');
+  if (!container) return;
 
-    // STEP 1: Use the automatic Jekyll variable for the path
-    const repoPath = "{{ site.github.repository_nwo }}"; 
+  // 2. Added a "/" before ${repoPath} to fix the URL construction
+  const apiUrl = `https://api.github.com{repoPath}/issues?state=open&labels=lab-demo`;
+
+  try {
+    console.log("Fetching from:", apiUrl);
+    const response = await fetch(apiUrl);
     
-    // STEP 2: Construct the API URL explicitly
-    const apiUrl = `https://api.github.com{repoPath}/issues?state=open&labels=lab-demo`;
-
-    try {
-      console.log("Fetching from:", apiUrl); // Check this in your Console!
-      const response = await fetch(apiUrl);
-      
-      if (!response.ok) {
-        container.innerHTML = `<p style="color:red;">❌ GitHub API Error: ${response.status}</p>`;
-        return;
-      }
-
-      const issues = await response.json();
-      const actualIssues = issues.filter(i => !i.pull_request);
-
-      if (actualIssues.length === 0) {
-        container.innerHTML = '<p>✅ No open issues reported.</p>';
-        return;
-      }
-
-      let listHtml = '<ul>';
-      actualIssues.forEach(issue => {
-        listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
-        
-        document.querySelectorAll('.demo-card').forEach(card => {
-          const cardId = card.getAttribute('data-demo-id');
-          if (cardId && issue.title.includes(`(${cardId})`)) {
-            card.style.borderColor = '#d73a49';
-            card.style.backgroundColor = '#fff5f5';
-            const badge = card.querySelector('.issue-badge');
-            if (badge) badge.style.display = 'block';
-          }
-        });
-      });
-      container.innerHTML = listHtml + '</ul>';
-
-    } catch (e) {
-      container.innerHTML = '<p style="color:red;">❌ Connection error. Try a hard refresh (Ctrl+F5).</p>';
-      console.error("Detailed Error:", e);
+    if (!response.ok) {
+      container.innerHTML = `<p style="color:red;">❌ GitHub API Error: ${response.status}</p>`;
+      return;
     }
+    
+    const issues = await response.json();
+    const actualIssues = issues.filter(i => !i.pull_request);
+
+    if (actualIssues.length === 0) {
+      container.innerHTML = '<p>✅ No open issues reported.</p>';
+      return;
+    }
+
+    let listHtml = '<ul>';
+    actualIssues.forEach(issue => {
+      listHtml += `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`;
+      
+      document.querySelectorAll('.demo-card').forEach(card => {
+        const cardId = card.getAttribute('data-demo-id');
+        if (cardId && issue.title.includes(`(${cardId})`)) {
+          card.style.borderColor = '#d73a49';
+          card.style.backgroundColor = '#fff5f5';
+          const badge = card.querySelector('.issue-badge');
+          if (badge) badge.style.display = 'block';
+        }
+      });
+    });
+    container.innerHTML = listHtml + '</ul>';
+  } catch (e) {
+    container.innerHTML = '<p style="color:red;">❌ Connection error. Check the console for details.</p>';
+    console.error("Detailed Error:", e);
   }
-  document.addEventListener('DOMContentLoaded', loadIssues);
+}
+document.addEventListener('DOMContentLoaded', loadIssues);
 </script>
 {% endraw %}
