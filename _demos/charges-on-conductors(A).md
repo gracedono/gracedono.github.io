@@ -1,7 +1,7 @@
 ---
 layout: demo
-title: Charges on Conductors
-demo_id: Ea-7
+title: Charges on Conductors (A)
+demo_id: Ea-7(A)
 ---
 ### Description
 
