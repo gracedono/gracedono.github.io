@@ -1,6 +1,6 @@
 ---
 layout: demo
-title: Electroscope
+title: Charges on Conductors
 demo_id: Ea-7
 ---
 ### Description
