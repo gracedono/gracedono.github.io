@@ -1,6 +1,6 @@
 ---
 layout: demo
-title: Field of A Solenoid
+title: Field of a Solenoid
 demo_id: Ei-10
 ---
 ### Description
