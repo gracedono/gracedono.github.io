@@ -22,8 +22,6 @@ body:
     attributes:
       label: Request Type
       options:
-        - New Lab Demo
-        - Update Existing Demo
         - Equipment/Resource Request
     validations:
       required: true
