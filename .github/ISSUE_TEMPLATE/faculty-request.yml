@@ -10,7 +10,7 @@ body:
       placeholder: e.g., Dr. Smith
     validations:
       required: true
-   - type: input
+  - type: input
     id: course_name
     attributes:
       label: Course Name/Number
