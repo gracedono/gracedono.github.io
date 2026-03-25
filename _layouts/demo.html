@@ -14,5 +14,50 @@ layout: default
   🚨 Report a Problem with {{ page.demo_id }}
 </button>
 
+<!-- The Button -->
+<a id="faculty-request-btn" class="request-button" href="#">
+  Request Update for this Demo
+</a>
+
+<script>
+  (function() {
+    // 1. Get the data from Jekyll's Liquid variables
+    const demoTitle = "{{ page.title | escape }}";
+    const demoID = "{{ page.demo_id | escape }}";
+    
+    // 2. Define your GitHub details
+    const username = "YOUR_GITHUB_USERNAME";
+    const repo = "YOUR_REPO_NAME";
+    const templateName = "faculty-request.yml";
+
+    // 3. Construct the URL with query parameters matching your YAML IDs
+    // We use encodeURIComponent to safely handle spaces and special characters
+    const baseUrl = `https://github.com{username}/${repo}/issues/new`;
+    const params = new URLSearchParams({
+      template: templateName,
+      demo_name: `${demoTitle} (${demoID})`, // Fills the 'demo_name' field
+      request_type: "Update Existing Demo"   // Pre-selects a dropdown option
+    });
+
+    // 4. Update the button's link
+    document.getElementById('faculty-request-btn').href = `${baseUrl}?${params.toString()}`;
+  })();
+</script>
+
+<style>
+  /* Optional: Basic styling for your button */
+  .request-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #2ea44f;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+  }
+  .request-button:hover {
+    background-color: #2c974b;
+  }
+</style>
 
 
