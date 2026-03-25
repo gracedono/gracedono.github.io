@@ -3,16 +3,18 @@ description: Request a new lab demo or update an existing one.
 title: "[REQUEST]: "
 labels: ["faculty-request", "needs-triage"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        ### Thanks for your request! 
-        Please fill out the details below to help us integrate your demo into the lab roadmap.
   - type: input
-    id: faculty_name
+    id: instructor_name
     attributes:
-      label: Faculty Name
+      label: Instructor Name
       placeholder: e.g., Dr. Smith
+    validations:
+      required: true
+  - type: input
+    id: demo_name
+    attributes:
+      label: Demo Name
+      placeholder: The title of the lab demo
     validations:
       required: true
   - type: dropdown
@@ -25,20 +27,11 @@ body:
         - Equipment/Resource Request
     validations:
       required: true
-  - type: textarea
-    id: description
+  - type: input
+    id: target_date
     attributes:
-      label: Demo Description
-      description: Provide a high-level overview of what the demo should cover.
-      placeholder: What are the learning objectives?
+      label: Target Completion Date
+      description: When do you need this demo ready for use?
+      placeholder: YYYY-MM-DD
     validations:
       required: true
-  - type: checkboxes
-    id: urgency
-    attributes:
-      label: Target Timeline
-      description: When would you ideally like this to be ready?
-      options:
-        - label: Current Semester
-        - label: Next Semester
-        - label: Future Planning
