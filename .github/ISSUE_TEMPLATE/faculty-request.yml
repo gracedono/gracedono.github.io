@@ -10,6 +10,13 @@ body:
       placeholder: e.g., Dr. Smith
     validations:
       required: true
+   - type: input
+    id: course_name
+    attributes:
+      label: Course Name/Number
+      placeholder: e.g., PHYS 101
+    validations:
+      required: true
   - type: input
     id: demo_name
     attributes:
