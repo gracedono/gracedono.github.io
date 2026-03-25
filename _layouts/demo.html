@@ -32,7 +32,7 @@ layout: default
 
     // 3. Construct the URL with query parameters matching your YAML IDs
     // We use encodeURIComponent to safely handle spaces and special characters
-    const baseUrl = `https://github.com{username}/${repo}/issues/new`;
+    const baseUrl = `https://github.com/${username}/${repo}/issues/new`;
     const params = new URLSearchParams({
       template: templateName,
       demo_name: `${demoTitle} (${demoID})`, // Fills the 'demo_name' field
