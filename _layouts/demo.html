@@ -10,13 +10,13 @@ layout: default
 
 <!-- This button uses site.github.repository_nwo to automatically get "username/repo" -->
 <button onclick="window.location.href='https://github.com/{{ site.github.repository_nwo }}/issues/new?title={{ page.title | url_encode }}%20({{ page.demo_id | url_encode }})&labels=lab-demo'" 
-        style="background-color: #d73a49; color: white; padding: 15px 25px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-family: sans-serif;">
+        style="background-color: #d73a49; color: white; padding: 10px 20px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-family: sans-serif;">
   🚨 Report a Problem with {{ page.demo_id }}
 </button>
 
 <!-- The Button -->
 <a id="faculty-request-btn" class="request-button" href="#">
-  Request Update for this Demo
+  Request this Demo
 </a>
 
 <script>
