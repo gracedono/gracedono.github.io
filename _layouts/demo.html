@@ -35,8 +35,11 @@ layout: default
     const baseUrl = `https://github.com/${username}/${repo}/issues/new`;
     const params = new URLSearchParams({
       template: templateName,
-      demo_name: `${demoTitle} (${demoID})`, // Fills the 'demo_name' field
-      request_type: "Request Demo"   // Pre-selects a dropdown option
+      // This fills the main Issue Title at the top of the page
+      title: `[REQUEST] ${demoTitle} (${demoID})`, 
+      // These fill the specific form fields by ID
+      demo_name: `${demoTitle} (${demoID})`,
+      request_type: "Update Existing Demo"
     });
 
     // 4. Update the button's link
