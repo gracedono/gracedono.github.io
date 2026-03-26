@@ -11,7 +11,8 @@ jobs:
         uses: actions/add-to-project@v1.0.2
         id: add-project
         with:
-          project-url: https://github.com/users/gracedono/projects/1/views/1
+          # Fixed URL (removed /views/1)
+          project-url: https://github.com
           github-token: ${{ secrets.PROJECT_TOKEN }}
 
       - name: Extract Date
@@ -24,14 +25,17 @@ jobs:
       - name: Update Project Fields
         if: steps.extract_date.outputs.found_date != ''
         run: |
+          # Get Project ID
+          PROJECT_ID=$(gh project view 1 --owner gracedono --format json | jq -r '.id')
+
           # Update Start Date field
           gh project item-edit --id ${{ steps.add-project.outputs.item-id }} \
             --field "Start Date" --date "${{ steps.extract_date.outputs.found_date }}" \
-            --project-id "$(gh project view 1 --owner gracedono --format json | jq -r '.id')"
+            --project-id "$PROJECT_ID"
           
-          # Update Target Date field
+          # Update Target Date field (Fixed 'steps' variable here)
           gh project item-edit --id ${{ steps.add-project.outputs.item-id }} \
-            --field "Target Date" --date "${{ secrets.extract_date.outputs.found_date }}" \
-            --project-id "$(gh project view 1 --owner gracedono --format json | jq -r '.id')"
+            --field "Target Date" --date "${{ steps.extract_date.outputs.found_date }}" \
+            --project-id "$PROJECT_ID"
         env:
           GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
