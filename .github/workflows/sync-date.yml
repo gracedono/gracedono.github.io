@@ -23,13 +23,18 @@ jobs:
           DATE=$(echo "${{ github.event.issue.body }}" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1)
           echo "found_date=$DATE" >> $GITHUB_OUTPUT
 
-      # 3. Update the Project Field using GitHub CLI
-      - name: Update Target Date Field
+      # Update BOTH fields to the same date for a single-day pin
+      - name: Update Project Fields
         if: steps.extract_date.outputs.found_date != ''
         run: |
+          # Update Target Date
           gh project item-edit --id ${{ steps.add-project.outputs.item-id }} \
-            --field "Target Date" \
-            --date "${{ steps.extract_date.outputs.found_date }}" \
-            --project-id "$(gh project view 1 --owner gracedono --format json | jq -r '.id')"
+            --field "Target Date" --date "${{ steps.extract_date.outputs.found_date }}" \
+            --project-id "$(gh project view YOUR_NUMBER --owner YOUR_USER --format json | jq -r '.id')"
+      
+          # Update Start Date (New Field)
+          gh project item-edit --id ${{ steps.add-project.outputs.item-id }} \
+            --field "Start Date" --date "${{ steps.extract_date.outputs.found_date }}" \
+            --project-id "$(gh project view YOUR_NUMBER --owner YOUR_USER --format json | jq -r '.id')"
         env:
           GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
