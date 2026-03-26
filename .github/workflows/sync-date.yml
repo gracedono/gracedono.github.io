@@ -12,7 +12,7 @@ jobs:
         id: add-project
         with:
           # Fixed URL (removed /views/1)
-          project-url: https://github.com
+          project-url: https://github.com/users/gracedono/projects/1
           github-token: ${{ secrets.PROJECT_TOKEN }}
 
       - name: Extract Date
