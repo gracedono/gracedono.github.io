@@ -1,0 +1,35 @@
+name: Sync Setup Date to Roadmap
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  update-project-date:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Add the issue to the project first (to get the Project Item ID)
+      - name: Add issue to project
+        uses: actions/add-to-project@v1.0.2
+        id: add-project
+        with:
+          project-url: https://github.com/users/gracedono/projects/1/views/1
+          github-token: ${{ secrets.PROJECT_TOKEN }}
+
+      # 2. Extract the date from the issue body (looks for YYYY-MM-DD)
+      - name: Extract Date
+        id: extract_date
+        run: |
+          # Finds the first match of a date in the body
+          DATE=$(echo "${{ github.event.issue.body }}" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1)
+          echo "found_date=$DATE" >> $GITHUB_OUTPUT
+
+      # 3. Update the Project Field using GitHub CLI
+      - name: Update Target Date Field
+        if: steps.extract_date.outputs.found_date != ''
+        run: |
+          gh project item-edit --id ${{ steps.add-project.outputs.item-id }} \
+            --field "Target Date" \
+            --date "${{ steps.extract_date.outputs.found_date }}" \
+            --project-id "$(gh project view 1 --owner gracedono --format json | jq -r '.id')"
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
