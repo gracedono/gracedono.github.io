@@ -7,9 +7,9 @@ jobs:
   update-project-date:
     runs-on: ubuntu-latest
     steps:
-      # 1. Add the issue to your project (Updated to v1 to remove the Node.js 20 warning)
+      # 1. Add the issue to your project (Using the exact v1.0.2 version)
       - name: Add issue to project
-        uses: actions/add-to-project@v1
+        uses: actions/add-to-project@v1.0.2
         id: add-project
         with:
           project-url: https://github.com/users/gracedono/projects/1
@@ -21,6 +21,7 @@ jobs:
         run: |
           DATE=$(echo "${{ github.event.issue.body }}" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1)
           echo "found_date=$DATE" >> $GITHUB_OUTPUT
+          echo "Bot found date: $DATE"
 
       # 3. Update both fields so the 'Pin' appears on the roadmap
       - name: Update Project Fields
