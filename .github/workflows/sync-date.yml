@@ -28,7 +28,7 @@ jobs:
         uses: ariatid/action-update-project-field@v1
         with:
           token: ${{ secrets.PROJECT_TOKEN }}
-          project-url: https://github.com
+          project-url: https://github.com/users/gracedono/projects/2
           item-id: ${{ steps.add_project.outputs.item-id }}
           field-name: Date 1
           field-value: ${{ steps.extract_date.outputs.found_date }}
