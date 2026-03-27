@@ -4,44 +4,42 @@ on:
     types: [opened, edited]
 
 jobs:
-  update-project-date:
+  update-project:
     runs-on: ubuntu-latest
     steps:
-      - name: Add issue to project
-        uses: actions/add-to-project@v1.0.2
-        id: add-project
+      # 1. Add to the NEW Project (v2)
+      - name: Add to Project
+        uses: actions/add-to-project@v1
+        id: add_project
         with:
-          project-url: https://github.com/users/gracedono/projects/1
+          project-url: https://github.com/users/gracedono/projects/2
           github-token: ${{ secrets.PROJECT_TOKEN }}
 
-      - name: Extract Date
+      # 2. Extract the date (YYYY-MM-DD)
+      - name: Get Date
         id: extract_date
         run: |
-          # Finds the YYYY-MM-DD date provided in your form
           DATE=$(echo "${{ github.event.issue.body }}" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1)
           echo "found_date=$DATE" >> $GITHUB_OUTPUT
 
-      - name: Update Project Fields
+      # 3. Update 'Date 1' (The Start Point)
+      - name: Set Date 1
         if: steps.extract_date.outputs.found_date != ''
-        run: |
-          # 1. Fetch the project data to find the hidden ID codes
-          PROJECT_DATA=$(gh project view 1 --owner gracedono --format json)
-          
-          # 2. Automatically find the Project ID and the specific Field IDs
-          PROJECT_ID=$(echo "$PROJECT_DATA" | jq -r '.id')
-          START_FIELD_ID=$(echo "$PROJECT_DATA" | jq -r '.fields[] | select(.name == "Start Date") | .id')
-          TARGET_FIELD_ID=$(echo "$PROJECT_DATA" | jq -r '.fields[] | select(.name == "Target Date") | .id')
+        uses: ariatid/action-update-project-field@v1
+        with:
+          token: ${{ secrets.PROJECT_TOKEN }}
+          project-url: https://github.com
+          item-id: ${{ steps.add_project.outputs.item-id }}
+          field-name: Date 1
+          field-value: ${{ steps.extract_date.outputs.found_date }}
 
-          # 3. Update Start Date using the ID
-          gh project item-edit --id ${{ steps.add-project.outputs.item-id }} \
-            --project-id "$PROJECT_ID" \
-            --field-id "$START_FIELD_ID" \
-            --date "${{ steps.extract_date.outputs.found_date }}"
-          
-          # 4. Update Target Date using the ID
-          gh project item-edit --id ${{ steps.add-project.outputs.item-id }} \
-            --project-id "$PROJECT_ID" \
-            --field-id "$TARGET_FIELD_ID" \
-            --date "${{ steps.extract_date.outputs.found_date }}"
-        env:
-          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+      # 4. Update 'Date 2' (The End Point)
+      - name: Set Date 2
+        if: steps.extract_date.outputs.found_date != ''
+        uses: ariatid/action-update-project-field@v1
+        with:
+          token: ${{ secrets.PROJECT_TOKEN }}
+          project-url: https://github.com
+          item-id: ${{ steps.add_project.outputs.item-id }}
+          field-name: Date 2
+          field-value: ${{ steps.extract_date.outputs.found_date }}
