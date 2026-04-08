@@ -1,0 +1,25 @@
+name: Sync Issue Date to Roadmap
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  update_project_date:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'faculty-request')
+    steps:
+      - name: Get Date from Issue Body
+        id: extract_date
+        run: |
+          # Grabs the value under the 'Target Completion Date' header in your form
+          DATE=$(echo "${{ github.event.issue.body }}" | grep -A 1 "### Target Completion Date" | tail -n 1 | xargs)
+          echo "date=$DATE" >> $GITHUB_OUTPUT
+
+      - name: Update Project Field
+        uses: titans-service-account/github-project-automation-plus@v1.1.0
+        with:
+          project-url: https://github.com/users/gracedono/projects/2
+          field-name: "Target Date"
+          field-value: ${{ steps.extract_date.outputs.date }}
+          github-token: ${{ secrets.ROADMAP_TOKEN }}
