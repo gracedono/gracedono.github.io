@@ -1,0 +1,29 @@
+name: Get Project IDs
+on: 
+  workflow_dispatch: # This allows you to run it manually with a button
+
+jobs:
+  list-ids:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get IDs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ROADMAP_TOKEN }}
+          script: |
+            const query = `query{
+              user(login: "gracedono"){
+                projectV2(number: 2) {
+                  id
+                  fields(first: 20) {
+                    nodes {
+                      ... on ProjectV2Field { id name }
+                      ... on ProjectV2SingleSelectField { id name }
+                      ... on ProjectV2IterationField { id name }
+                    }
+                  }
+                }
+              }
+            }`;
+            const result = await github.graphql(query);
+            console.log(JSON.stringify(result, null, 2));
